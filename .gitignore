@@ -1,0 +1,62 @@
+# ---------------- General ----------------
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# ---------------- Editors/IDEs ----------------
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code (uncomment if you don't want to commit workspace settings)
+#.vscode/
+
+# ---------------- Flutter/Dart ----------------
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+
+# ---------------- Android ----------------
+android/.gradle/
+android/local.properties
+android/key.properties
+android/app/*.keystore
+android/app/*.jks
+# release APK/AABs
+android/app/release
+# Generated registrants
+android/app/src/main/java/**/GeneratedPluginRegistrant.java
+
+# (Optional) If using Firebase and you don't want to commit it:
+# android/app/google-services.json
+
+# ---------------- iOS (if you also build iOS) ----------------
+ios/Flutter/.last_build_id
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Generated.xcconfig
+ios/Runner/GeneratedPluginRegistrant.*
+# (Optional) If using Firebase and you don't want to commit it:
+# ios/Runner/GoogleService-Info.plist
+
+# ---------------- Env/Secrets (if you use them) ----------------
+.env
+.env.*

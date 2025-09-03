@@ -1,0 +1,1 @@
+enum ValidationType { EMAIL, TEXT, NONE, ShowError }
