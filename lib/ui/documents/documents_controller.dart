@@ -95,7 +95,6 @@ class DocumentsController extends GetxController {
       map['otp'] = generateOtp();
       map['user_id'] = auth.value.id?.toString();
       dio.FormData data = dio.FormData.fromMap(map);
-
       data.files.add(MapEntry(
         "file",
         dio.MultipartFile.fromFileSync(

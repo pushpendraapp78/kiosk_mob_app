@@ -36,7 +36,7 @@ class ForgetPasswordLogic extends GetxController {
     if(formKeyUpdate.currentState!.validate()){
       isLoading.value=true;
       Map<String,dynamic>map={};
-      map['email']=emailCon.text;
+      map['email_id']=emailCon.text;
       forgetPassword(map).then((value) {
         isLoading.value=false;
         if(value.success!){

@@ -59,7 +59,7 @@ Future<BasicResponse> changePassword(Map<String, dynamic> map) async {
 }
 
 Future<BasicResponse> forgetPassword(Map<String, dynamic> map) async {
-  var resp = await httpClientWithHeader().post('/forgot-password', data: map);
+  var resp = await httpClientWithHeader().post('/admin/forgot-password', data: map);
   return BasicResponse.fromJson(resp.data);
 }
 

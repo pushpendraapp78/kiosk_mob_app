@@ -132,7 +132,6 @@ class _LoginPageState extends State<PreviewDocumentView> {
                     _con.payAmount();
 
                     // 👉 Instead, directly add the document without payment
-                    // 👉 Instead, directly add the document without payment
                     // _con.onAddDocument();
                   },
                   isLoading: _con.isLoading.value,
