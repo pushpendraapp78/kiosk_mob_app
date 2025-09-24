@@ -56,7 +56,7 @@ class TextAreaWidget extends StatelessWidget {
     this.textAlignVertical = TextAlignVertical.top,
     this.onChanged,
     this.onDone,
-    this.validator, // 👈 added
+    this.validator, required FocusNode focusNode,
   });
 
   @override

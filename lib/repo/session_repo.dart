@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter/material.dart'; // Not Used
 import 'package:ipbot_app/model/user_detail.dart';
 import 'package:ipbot_app/repo/setting_repo.dart';
 
@@ -16,7 +15,6 @@ Future CreateSession(data, isLogin) async {
 
 Future<UserDetail> getSession() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // print("session ${prefs.getString('data')}");
   log("session ${prefs.getString('data')}");
   UserDetail details =
       UserDetail.fromJson(jsonDecode(prefs.getString('data') ?? "{}"));

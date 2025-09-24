@@ -31,12 +31,16 @@ class DocumentsController extends GetxController {
 
   final Razorpay _razorpay = Razorpay();
 
+  String? razorpayKeyId;
+  String? razorpayKeySecret;
+
   @override
   void onInit() {
     super.onInit();
     onList();
     getAmount();
     initPaymentGateway();
+    fetchRazorpayCredentials(); // 👈 fetch credentials on init
   }
 
   @override
@@ -45,26 +49,35 @@ class DocumentsController extends GetxController {
     _razorpay.clear();
   }
 
+  /// Fetch Razorpay key_id and key_secret from API
+  Future<void> fetchRazorpayCredentials() async {
+    try {
+      final creds = await getRazorpayCredentials();
+      razorpayKeyId = creds['key_id'];
+      razorpayKeySecret = creds['key_secret'];
+      print("✅ Razorpay credentials fetched: $razorpayKeyId");
+    } catch (e) {
+      Tools.ShowErrorMessage("Failed to load Razorpay credentials");
+      print("❌ Error fetching Razorpay credentials: $e");
+    }
+  }
+
   void getAmount() {
     print("Fetching amount for printType: $printType");
     if (printType == "Color") {
       getAmountPerPageColor().then((value) {
         amountPerPage = value.data;
-        print("amountPerPageColor: $amountPerPage");
-        getTotalAmount(); // Call getTotalAmount after setting amountPerPage
+        getTotalAmount();
       }).catchError((e) {
-        print("Error fetching amountPerPageColor: $e");
-        amountPerPage = "0"; // Fallback value
+        amountPerPage = "0";
         getTotalAmount();
       });
     } else {
       getAmountPerPage().then((value) {
         amountPerPage = value.data;
-        print("amountPerPage: $amountPerPage");
-        getTotalAmount(); // Call getTotalAmount after setting amountPerPage
+        getTotalAmount();
       }).catchError((e) {
-        print("Error fetching amountPerPage: $e");
-        amountPerPage = "0"; // Fallback value
+        amountPerPage = "0";
         getTotalAmount();
       });
     }
@@ -77,15 +90,6 @@ class DocumentsController extends GetxController {
         return;
       }
       isLoading.value = true;
-      // formDataToSend.fields.addAll([
-      //   MapEntry('page_type', pageType ?? 'A4'),
-      //   MapEntry('print_type', printType ?? 'Color'),
-      //   MapEntry('no_of_copies', noOfCopies ?? '2'),
-      //   MapEntry('transactions_id', transactionsId.value ),
-      //   MapEntry('amount', amount.value),
-      //   MapEntry('otp', (1000 + (Random().nextDouble() * 9000).floor()).toString()),
-      //   MapEntry('user_id', auth.value.id?.toString() ?? '1'),
-      // ]);
       Map<String, dynamic> map = {};
       map['page_type'] = pageType;
       map['print_type'] = printType;
@@ -120,16 +124,12 @@ class DocumentsController extends GetxController {
     }
   }
 
-
-
   String generateOtp() {
     var rnd = Random();
     var next = rnd.nextDouble() * 1000000;
-
     while (next < 100000) {
       next *= 10;
     }
-    print('otp==>${next.toInt()}');
     return next.toInt().toString();
   }
 
@@ -154,12 +154,10 @@ class DocumentsController extends GetxController {
         Tools.ShowErrorMessage("No documents found");
       }
     }).catchError((e) {
-      print("Error fetching documents: $e");
       refreshController.loadFailed();
       Tools.ShowErrorMessage("Failed to load documents. Please try again.");
     });
   }
-
 
   void onDeleteItem(Data data) {
     list.remove(data);
@@ -173,11 +171,10 @@ class DocumentsController extends GetxController {
     double copy = double.parse(noOfCopies!);
     double pageAmount = double.parse(amountPerPage!);
     for (var element in pageCount) {
-      pdfAmount = pdfAmount + (element * copy * pageAmount);
+      pdfAmount += (element * copy * pageAmount);
     }
     amount.value = (pdfAmount).toString();
   }
-
 
   void initPaymentGateway() {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -186,20 +183,26 @@ class DocumentsController extends GetxController {
   }
 
   Future<void> payAmount() async {
+    if (razorpayKeyId == null || razorpayKeySecret == null) {
+      Tools.ShowErrorMessage("Razorpay credentials not loaded");
+      return;
+    }
+
     double amt = double.parse(amount.value) * 100;
     String? id = await createOrder(amt);
-    var options = {
-      'key': 'rzp_live_hzmhxKLtnWFjhB',
-      'order_id': id,
-      'amount': amt,
-      'name': '${auth.value.name}',
-      'description': 'Print Document',
-      'prefill': {
-        'contact': '${auth.value.mobile}',
-        'email': '${auth.value.email}'
-      }
-    };
+
     if (id != null) {
+      var options = {
+        'key': razorpayKeyId, // 👈 dynamic key from API
+        'order_id': id,
+        'amount': amt,
+        'name': '${auth.value.name}',
+        'description': 'Print Document',
+        'prefill': {
+          'contact': '${auth.value.mobile}',
+          'email': '${auth.value.email}'
+        }
+      };
       _razorpay.open(options);
     } else {
       Tools.ShowErrorMessage("Order not created");
@@ -219,6 +222,11 @@ class DocumentsController extends GetxController {
   void _handleExternalWallet(ExternalWalletResponse response) {}
 
   Future<String?> createOrder(amt) async {
+    if (razorpayKeyId == null || razorpayKeySecret == null) {
+      Tools.ShowErrorMessage("Razorpay credentials not loaded");
+      return null;
+    }
+
     String orderID = "rec_${DateTime.now().millisecond}";
     final Map<String, dynamic> body = {
       "amount": amt,
@@ -227,17 +235,15 @@ class DocumentsController extends GetxController {
       "partial_payment": true,
       "first_payment_min_amount": 1,
     };
-    var credentials =
-        BasicAuthClient('rzp_live_hzmhxKLtnWFjhB', 'GZL6YqyRjvc9osRzpKThEv22');
+
+    var credentials = BasicAuthClient(razorpayKeyId!, razorpayKeySecret!);
     var response = await credentials.post(
       Uri.parse('https://api.razorpay.com/v1/orders'),
       headers: {"Authorization": credentials.toString()},
       body: jsonEncode(body),
     );
 
-    print("credentials==>${response.body}");
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print("Order Created: ${response.body}");
       return jsonDecode(response.body)['id'];
     } else {
       print("Error: ${response.body}");
@@ -245,3 +251,4 @@ class DocumentsController extends GetxController {
     }
   }
 }
+

@@ -5,12 +5,12 @@ import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ipbot_app/repo/setting_repo.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'global_configuration.dart';
+import './global_configuration.dart';
 
 BaseOptions options = BaseOptions(
   baseUrl: getURL(),
-  connectTimeout: const Duration(seconds: 10),
-  receiveTimeout: const Duration(seconds: 10),
+  connectTimeout: const Duration(seconds: 120),
+  receiveTimeout: const Duration(seconds: 120),
   maxRedirects: 2,
   responseType: ResponseType.json,
   contentType: "application/json",
@@ -80,7 +80,7 @@ class HeaderInterceptor extends Interceptor {
 
 String getURL() {
   final url = GlobalConfiguration().getValue('api_url')?.toString();
-  print('API URL: $url'); // Debug log
+  print('API URL: $url');
   if (url == null) {
     throw Exception('api_url not found in configuration');
   }

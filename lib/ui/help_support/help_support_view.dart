@@ -13,6 +13,7 @@ import 'help_support_controller.dart';
 
 class HelpSupportPage extends StatelessWidget {
   final _con = Get.put(HelpSupportController()); // ✅ same controller
+  final FocusNode _messageFocusNode = FocusNode(); // FocusNode for message field
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class HelpSupportPage extends StatelessWidget {
           child: SingleChildScrollView(
             controller: ScrollController()
               ..addListener(() {
+                // Ensures the keyboard doesn't block the content
                 FocusScope.of(context).unfocus();
               }),
             child: Form(
@@ -92,6 +94,7 @@ class HelpSupportPage extends StatelessWidget {
                     ),
                     TextAreaWidget(
                       controller: _con.messageCon,
+                      focusNode: _messageFocusNode,  // Set the focus node
                       hint: "Your message...",
                       inputType: TextInputType.multiline,
                       minLines: 5,

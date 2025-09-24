@@ -17,6 +17,7 @@ import '../ui/widgets/header_txt_widget.dart';
 import '../ui/setting/privacy_policy_view.dart';
 import '../ui/help_support/help_support_view.dart';
 import '../ui/help_support/help_support_list_view.dart';
+// import '../ui/hair_changer/hair_changer_page.dart';
 
 List<GetPage> appRoutes() => [
   GetPage(
@@ -89,6 +90,11 @@ List<GetPage> appRoutes() => [
     page: () => HelpSupportListPage(),
     transitionDuration: const Duration(milliseconds: 500),
   ),
+  // GetPage(
+  //   name: '/hair_changer',
+  //   page: () => const HairChangerPage(),
+  //   transitionDuration: const Duration(milliseconds: 500),
+  // ),
 ];
 
 Route? onGenerateRoute(RouteSettings settings) {
@@ -99,6 +105,12 @@ Route? onGenerateRoute(RouteSettings settings) {
       page: () => const DocumentsPage(),
     );
   }
+  // if (settings.name == 'hair_changer') {
+  //   return GetPageRoute(
+  //     settings: settings,
+  //     page: () => const HairChangerPage(),
+  //   );
+  // }
   if (settings.name == 'more') {
     return GetPageRoute(
       settings: settings,

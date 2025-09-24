@@ -4,6 +4,7 @@ import 'package:ipbot_app/ui/widgets/header_txt_widget.dart';
 import '../../Constant/color_const.dart';
 import '../../services/route_generator.dart';
 import 'dashboard_controller.dart';
+// import '../hair_changer/hair_changer_page.dart';
 
 class DashboardPage extends StatelessWidget {
   DashboardPage({super.key});
@@ -30,6 +31,17 @@ class DashboardPage extends StatelessWidget {
               ),
               label: "Document",
             ),
+            // BottomNavigationBarItem(
+            //   activeIcon: Icon(
+            //     Icons.palette,
+            //     color: primaryColorCode,
+            //   ),
+            //   icon: Icon(
+            //     Icons.palette_outlined,
+            //     color: color_B8B7C7,
+            //   ),
+            //   label: "Hair Changer", // New tab
+            // ),
             BottomNavigationBarItem(
               activeIcon: Icon(
                 Icons.menu,

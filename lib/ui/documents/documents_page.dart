@@ -10,7 +10,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/header_txt_widget.dart';
 import 'documents_controller.dart';
-
+import 'package:intl/intl.dart';
 
 class DocumentsPage extends StatefulWidget {
   const DocumentsPage({super.key});
@@ -25,6 +25,18 @@ class _DocumentsPageState extends State<DocumentsPage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) {
+      return "-";
+    }
+    try {
+      DateTime dateTime = DateTime.parse(dateStr);
+      return DateFormat("dd MMM yyyy hh:mm a").format(dateTime);
+    } catch (e) {
+      return dateStr; // fallback if parsing fails
+    }
   }
 
   @override
@@ -249,7 +261,8 @@ class _DocumentsPageState extends State<DocumentsPage> {
                   Expanded(
                     flex: 2,
                     child: SubTxtWidget(
-                      '${data.createdAt}',
+                      _formatDate(data.createdAt),
+                      // '${data.createdAt}',
                       fontSize: 12,
                     ),
                   ),

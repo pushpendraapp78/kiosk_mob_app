@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:ipbot_app/Utils/tools.dart';
 import 'package:ipbot_app/repo/session_repo.dart';
 import 'package:ipbot_app/repo/setting_repo.dart';
-
 import '../../repo/auth_repo.dart';
 
 class DashboardController extends GetxController {
@@ -20,10 +19,13 @@ class DashboardController extends GetxController {
         case 0:
           Get.toNamed("home", id: 1);
           break;
+        // case 1:
+        //   Get.toNamed("hair_changer", id: 1); // New route for Hair Changer
+        //   break;
         case 1:
           Get.toNamed("more", id: 1);
           break;
-          case 2:
+        case 2:
           Get.toNamed("help_support", id: 1);
           break;
       }
@@ -32,7 +34,7 @@ class DashboardController extends GetxController {
 
   void onGetProfile() {
     getSession().then(
-      (value) {
+          (value) {
         if (value.token == null) {
           Logout();
           Tools.ShowErrorMessage('Token Expire');
@@ -41,7 +43,7 @@ class DashboardController extends GetxController {
       },
     );
     getProfile().then(
-      (value) {
+          (value) {
         if (value.success!) {
           value.data!.token = auth.value.token;
           CreateSession(value.data!.toJson(), true);
